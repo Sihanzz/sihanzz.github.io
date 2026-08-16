@@ -41,6 +41,13 @@ h1,h2,h3,h4{font-family:var(--font-head); font-weight:600; letter-spacing:-0.01e
 #bg-canvas{position:fixed; inset:0; width:100%; height:100%; z-index:0; opacity:.55; pointer-events:none; transition:opacity .6s ease;}
 html[data-theme="artist"] #bg-canvas{opacity:.35;}
 
+/* ---------- PERSONA-GATED CONTENT ---------- */
+/* engineer persona: show projects, hide gallery. artist persona: show gallery, hide projects. */
+html[data-theme="engineer"] #gallery,
+html[data-theme="engineer"] a[href="#gallery"]{display:none;}
+html[data-theme="artist"] #projects,
+html[data-theme="artist"] a[href="#projects"]{display:none;}
+
 /* ---------- NAV ---------- */
 header#site-nav{
   position:fixed; top:0; left:0; right:0; z-index:100;
@@ -177,6 +184,37 @@ h1.hero-name span{
 .proj-links a{font-family:var(--font-mono); font-size:12px; color:var(--accent); display:flex; align-items:center; gap:5px;}
 .proj-links a:hover{text-decoration:underline;}
 
+/* ---------- GALLERY ---------- */
+.gallery-intro{color:var(--text-dim); max-width:640px; margin-bottom:8px; font-size:14.5px;}
+.gallery-legend{font-family:var(--font-mono); font-size:11px; color:var(--text-dimmer); margin-bottom:32px;}
+.gallery-legend span{color:var(--accent);}
+.gallery-grid{columns:3 260px; column-gap:22px;}
+.art-card{display:block; break-inside:avoid; margin-bottom:22px;}
+.art-frame{
+  position:relative; border-radius:var(--radius); overflow:hidden; border:1px solid var(--border);
+  background:var(--surface); transition:border-color .3s;
+}
+.art-frame img{width:100%; height:auto; display:block; filter:saturate(.96); transition:transform .6s ease;}
+.art-card:hover .art-frame{border-color:rgba(var(--accent-rgb),.55);}
+.art-card:hover .art-frame img{transform:scale(1.035);}
+.art-frame .bbox-full{
+  position:absolute; inset:7px; border:1.5px solid var(--accent); border-radius:6px; opacity:0; transition:opacity .35s ease;
+}
+.art-card:hover .art-frame .bbox-full{opacity:.8;}
+.art-tags{position:absolute; top:9px; left:9px; display:flex; flex-direction:column; align-items:flex-start; gap:5px; opacity:.85; transition:opacity .3s;}
+.art-card:hover .art-tags{opacity:1;}
+.art-tags span{
+  font-family:var(--font-mono); font-size:9.5px; font-weight:600; letter-spacing:.01em;
+  background:rgba(6,9,14,.75); backdrop-filter:blur(4px); color:var(--accent);
+  border:1px solid rgba(var(--accent-rgb),.45); padding:3px 7px; border-radius:3px 3px 3px 0; white-space:nowrap;
+}
+.art-tags span.ref{color:var(--accent-2); border-color:rgba(var(--accent2-rgb),.45);}
+.art-frame .scan-line{opacity:0;}
+.art-card:hover .art-frame .scan-line{opacity:.85; animation:scan 1.8s linear infinite;}
+.art-card figcaption{padding:12px 2px 0;}
+.art-title{display:block; font-family:var(--font-head); font-size:14.5px; font-weight:600;}
+.art-note{display:block; font-family:var(--font-mono); font-size:11px; color:var(--text-dimmer); margin-top:3px;}
+
 /* ---------- SKILLS ---------- */
 .skills-wrap{display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:start;}
 .skill-group{margin-bottom:22px;}
@@ -218,6 +256,7 @@ footer p span{color:var(--accent);}
   .about-grid{grid-template-columns:1fr;}
   .edu-grid{grid-template-columns:1fr;}
   .proj-grid{grid-template-columns:1fr;}
+  .gallery-grid{columns:2 200px;}
   .skills-wrap{grid-template-columns:1fr;}
   .writing-grid{grid-template-columns:1fr;}
   nav#primary-nav{
@@ -227,6 +266,9 @@ footer p span{color:var(--accent);}
   nav#primary-nav.open{transform:translateY(0);}
   nav#primary-nav a{padding:12px 16px;}
   .nav-toggle{display:block;}
+}
+@media (max-width:520px){
+  .gallery-grid{columns:1;}
 }
 </style>
 </head>
@@ -241,6 +283,7 @@ footer p span{color:var(--accent);}
       <a href="#about" class="nav-link">about</a>
       <a href="#experience" class="nav-link">experience</a>
       <a href="#projects" class="nav-link">projects</a>
+      <a href="#gallery" class="nav-link">gallery</a>
       <a href="#skills" class="nav-link">skills</a>
       <a href="#writing" class="nav-link">writing</a>
       <a href="#contact" class="nav-link">contact</a>
@@ -265,7 +308,7 @@ footer p span{color:var(--accent);}
       <div class="hero-role mono">I build <span id="typed-role"></span></div>
       <p class="hero-desc">Robotics Software Engineer at M8M Group and NUS M.Sc. graduate in Mechanical Engineering, specializing in computer vision and deep learning for robotic perception. Off the clock, I trade tensors for paintbrushes — chasing the same obsession with pattern and story through watercolor and manga.</p>
       <div class="hero-links">
-        <a class="btn primary" href="#projects">View projects →</a>
+        <a class="btn primary" id="hero-cta" href="#projects">View projects →</a>
         <a class="btn" href="mailto:sihandong14@gmail.com">Say hello</a>
         <a class="btn" href="https://github.com/Sihanzz" target="_blank" rel="noopener">GitHub</a>
       </div>
@@ -405,6 +448,223 @@ footer p span{color:var(--accent);}
     </div>
   </section>
 
+  <!-- GALLERY -->
+  <section id="gallery">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-tag">03 · gallery</div>
+        <h2>Same eyes, different pipeline.</h2>
+      </div>
+      <p class="gallery-intro reveal">The perception stack I use off the clock — watercolor, ink and an iPad, mostly. Every piece below still gets run through the object detector out of habit.</p>
+      <div class="gallery-legend reveal"><span>■</span> medium detected · <span>■</span> reference detected — confidence scores are for entertainment purposes only.</div>
+
+      <div class="gallery-grid reveal">
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-1.jpg" width="1050" height="1400" alt="Digital portrait study inspired by Call Me by Your Name" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: procreate · 0.98</span>
+              <span class="ref">ref: call_me_by_your_name · 0.93</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Call Me by Your Name</span>
+            <span class="art-note">fan poster study — digital portrait</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-2.jpg" width="1057" height="1400" alt="Original character falling through clouds toward Earth" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: procreate · 0.96</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Free Fall</span>
+            <span class="art-note">original character — sci-fi digital painting</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-3.jpg" width="989" height="1400" alt="Two-panel manga-style character study, golden hour and close-up eyes" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: procreate · 0.97</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Golden Hour</span>
+            <span class="art-note">two-panel character study</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-4.jpg" width="1355" height="1400" alt="Evangelion-inspired original character in a red plugsuit with a cyber halo HUD" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: procreate · 0.95</span>
+              <span class="ref">ref: neon_genesis_evangelion · 0.89</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">0511</span>
+            <span class="art-note">original character, plugsuit &amp; cyber HUD</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-5.jpg" width="1030" height="1400" alt="Self-portrait photo edited with a Spider-Gwen style mask, in front of an open fridge" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: procreate (photo comp) · 0.94</span>
+              <span class="ref">ref: spider-gwen · 0.90</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Fridge Raid</span>
+            <span class="art-note">photo + digital paint-over, comic FX</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-6.jpg" width="1043" height="1400" alt="Four gouache sky studies on paper: sunset, moonrise, blue clouds, sunset over water" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: gouache_on_paper · 0.96</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Sky Studies</span>
+            <span class="art-note">four gouache studies, traditional</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-7.jpg" width="1050" height="1400" alt="Ink pen illustration of a kimono-clad character surrounded by butterflies" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: ink_on_paper · 0.95</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Kimono &amp; Butterflies</span>
+            <span class="art-note">ink linework, traditional</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-8.jpg" width="1400" height="1400" alt="Digital self-caricature surrounded by physics and linear algebra textbooks and binary code" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: procreate · 0.97</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Physics Season</span>
+            <span class="art-note">self-caricature, midterms era</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-9.jpg" width="1400" height="1050" alt="Graphite pencil sketch of a street corner and buildings, dated 2018" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: graphite_on_paper · 0.94</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Street Corner, 2018</span>
+            <span class="art-note">architectural sketch, traditional</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-10.jpg" width="1166" height="1400" alt="Self-portrait selfie split with a hand-painted Spider-Verse style mask overlay" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: procreate (photo comp) · 0.95</span>
+              <span class="ref">ref: spider-verse · 0.92</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Half-Mask Selfie</span>
+            <span class="art-note">selfie + digital paint-over, live inference down the seam</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-11.jpg" width="1050" height="1400" alt="Ink comic strip with two portraits and quotes from Miyazaki and the novel Hyouka" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: ink_on_paper · 0.93</span>
+              <span class="ref">ref: hyouka · 0.85</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Two Quotes</span>
+            <span class="art-note">ink comic strip, traditional</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-12.jpg" width="1400" height="831" alt="Digital illustration of a couple at a lantern festival with fox mask and No-Face motifs" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: procreate · 0.97</span>
+              <span class="ref">ref: spirited_away · 0.87</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Lantern Festival</span>
+            <span class="art-note">character illustration, digital</span>
+          </figcaption>
+        </figure>
+
+        <figure class="art-card">
+          <div class="art-frame">
+            <img src="assets/img/portfolio/web/portfolio-13.jpg" width="1400" height="1400" alt="Digital still-life study of a fried egg" loading="lazy">
+            <div class="bbox-full"></div>
+            <div class="art-tags">
+              <span>medium: procreate · 0.98</span>
+            </div>
+            <div class="scan-line"></div>
+          </div>
+          <figcaption>
+            <span class="art-title">Sunny Side Up</span>
+            <span class="art-note">food study, digital</span>
+          </figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
   <!-- SKILLS -->
   <section id="skills">
     <div class="wrap">
@@ -499,10 +759,22 @@ footer p span{color:var(--accent);}
 const root = document.documentElement;
 const themeBtn = document.getElementById('theme-toggle');
 const themeLabel = document.getElementById('theme-label');
+const heroCta = document.getElementById('hero-cta');
+function applyPersona(theme){
+  if (theme === 'artist'){
+    heroCta.href = '#gallery';
+    heroCta.textContent = 'View gallery →';
+  } else {
+    heroCta.href = '#projects';
+    heroCta.textContent = 'View projects →';
+  }
+}
+applyPersona(root.getAttribute('data-theme'));
 themeBtn.addEventListener('click', () => {
   const next = root.getAttribute('data-theme') === 'engineer' ? 'artist' : 'engineer';
   root.setAttribute('data-theme', next);
   themeLabel.textContent = next;
+  applyPersona(next);
 });
 
 /* ---------------- MOBILE NAV ---------------- */
@@ -778,7 +1050,7 @@ document.querySelectorAll('canvas[data-anim]').forEach(c => {
       nodes.push({x:gx,y:gy,label:g.label,core:true,ang:gAng});
       g.items.forEach((label,ii) => {
         const a = gAng + (ii-(g.items.length-1)/2)*0.3;
-        const rr = R*(1.6 + (ii%2)*0.28);
+        const rr = R*(1.6 + ii*0.22);
         nodes.push({x:cx+Math.cos(a)*rr, y:cy+Math.sin(a)*rr, label, core:false, parent:nodes.length-ii-1<0?0:groups.indexOf(g), gx, gy, la:a});
       });
     });
