@@ -1,700 +1,833 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="engineer">
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dong Sihan — Robotics &amp; Vision</title>
+<meta name="description" content="Dong Sihan — Robotics Software Engineer &amp; Computer Vision Researcher based in Singapore. Also a painter and storyteller.">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14; --bg-alt:#0d121a; --surface:#121824; --surface-2:#161e2c;
+  --border:#233042; --text:#e8eef6; --text-dim:#8ea0b4; --text-dimmer:#5c6c7f;
+  --accent:#4fd1ff; --accent-2:#8b7bff; --accent-rgb:79,209,255; --accent2-rgb:139,123,255;
+  --radius:14px; --maxw:1080px;
+  --font-head:'Space Grotesk',sans-serif; --font-body:'Inter',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+}
+html[data-theme="artist"]{
+  --bg:#181009; --bg-alt:#1c130b; --surface:#221a10; --surface-2:#2b2013;
+  --border:#4a3620; --text:#f8ede0; --text-dim:#cbab88; --text-dimmer:#8a7050;
+  --accent:#ff9d55; --accent-2:#ff6f8f; --accent-rgb:255,157,85; --accent2-rgb:255,111,143;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg); color:var(--text); font-family:var(--font-body);
+  line-height:1.6; overflow-x:hidden; transition:background .6s ease,color .6s ease;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(var(--accent-rgb),.35); color:#fff;}
+a{color:inherit; text-decoration:none;}
+img{max-width:100%; display:block;}
+h1,h2,h3,h4{font-family:var(--font-head); font-weight:600; letter-spacing:-0.01em;}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
+.mono{font-family:var(--font-mono);}
+.accent{color:var(--accent);}
 
-  <title>iPortfolio Bootstrap Template - Index</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+#bg-canvas{position:fixed; inset:0; width:100%; height:100%; z-index:0; opacity:.55; pointer-events:none; transition:opacity .6s ease;}
+html[data-theme="artist"] #bg-canvas{opacity:.35;}
 
-  <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+/* ---------- NAV ---------- */
+header#site-nav{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  backdrop-filter:blur(14px) saturate(140%);
+  background:rgba(10,14,20,.55); border-bottom:1px solid var(--border);
+  transition:background .6s ease, border-color .6s ease;
+}
+html[data-theme="artist"] header#site-nav{background:rgba(24,16,9,.6);}
+.nav-inner{max-width:var(--maxw); margin:0 auto; padding:14px 28px; display:flex; align-items:center; justify-content:space-between; gap:20px;}
+.brand{font-family:var(--font-mono); font-size:15px; font-weight:600; letter-spacing:.02em; display:flex; align-items:center; gap:8px;}
+.brand .dot{width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent); animation:pulse 2.4s infinite;}
+@keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.35;}}
+nav#primary-nav{display:flex; gap:2px; align-items:center;}
+nav#primary-nav a{
+  font-size:13px; font-family:var(--font-mono); color:var(--text-dim); padding:8px 12px; border-radius:8px;
+  transition:color .25s, background .25s;
+}
+nav#primary-nav a:hover, nav#primary-nav a.active{color:var(--text); background:var(--surface-2);}
+#theme-toggle{
+  display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:12px;
+  background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:5px 6px 5px 12px; cursor:pointer;
+  color:var(--text-dim);
+}
+#theme-toggle .pill{
+  width:38px; height:20px; border-radius:999px; background:var(--surface-2); position:relative; border:1px solid var(--border);
+}
+#theme-toggle .pill::after{
+  content:''; position:absolute; top:1px; left:1px; width:16px; height:16px; border-radius:50%;
+  background:var(--accent); transition:transform .35s cubic-bezier(.4,0,.2,1), background .35s;
+  box-shadow:0 0 8px rgba(var(--accent-rgb),.7);
+}
+html[data-theme="artist"] #theme-toggle .pill::after{transform:translateX(18px);}
+.nav-toggle{display:none; background:none; border:none; color:var(--text); font-size:22px; cursor:pointer;}
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+/* ---------- LAYOUT ---------- */
+main{position:relative; z-index:1;}
+section{padding:120px 0 40px;}
+section:first-of-type{padding-top:170px;}
+.section-head{margin-bottom:52px;}
+.section-tag{font-family:var(--font-mono); font-size:12px; color:var(--accent); letter-spacing:.12em; text-transform:uppercase; display:flex; align-items:center; gap:10px;}
+.section-tag::before{content:''; width:24px; height:1px; background:var(--accent);}
+.section-head h2{font-size:clamp(28px,4vw,40px); margin-top:10px;}
 
-  <!-- Vendor CSS Files -->
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+/* ---------- HERO ---------- */
+#hero{padding-top:180px; padding-bottom:100px; position:relative;}
+.hero-eyebrow{font-family:var(--font-mono); font-size:13px; color:var(--text-dim); display:flex; align-items:center; gap:10px; margin-bottom:22px;}
+.hero-eyebrow .blink{display:inline-block; width:8px; height:14px; background:var(--accent); animation:blink 1s steps(1) infinite;}
+@keyframes blink{50%{opacity:0;}}
+h1.hero-name{font-size:clamp(46px,8vw,92px); line-height:.98; letter-spacing:-.02em;}
+h1.hero-name span{
+  background:linear-gradient(120deg,var(--accent),var(--accent-2));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hero-role{font-family:var(--font-mono); font-size:clamp(16px,2.4vw,22px); color:var(--text-dim); margin-top:20px; min-height:30px;}
+#typed-role{color:var(--text);}
+.hero-desc{max-width:600px; margin-top:28px; color:var(--text-dim); font-size:16px;}
+.hero-links{display:flex; gap:14px; margin-top:36px; flex-wrap:wrap;}
+.btn{
+  font-family:var(--font-mono); font-size:13px; padding:12px 20px; border-radius:999px; border:1px solid var(--border);
+  display:inline-flex; align-items:center; gap:8px; transition:all .25s ease; color:var(--text);
+}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#04121a; font-weight:600;}
+.btn.primary:hover{transform:translateY(-2px); box-shadow:0 8px 24px rgba(var(--accent-rgb),.35);}
+.btn:not(.primary):hover{border-color:var(--accent); color:var(--accent); transform:translateY(-2px);}
 
-  <!-- Template Main CSS File -->
-  <link href="assets/css/style.css" rel="stylesheet">
+/* ---------- ABOUT ---------- */
+#about .about-grid{display:grid; grid-template-columns:300px 1fr; gap:56px; align-items:start;}
+.photo-frame{position:relative; border-radius:var(--radius); overflow:hidden; border:1px solid var(--border); aspect-ratio:1/1; background:var(--surface);}
+.photo-frame img{width:100%; height:100%; object-fit:cover; filter:saturate(.9);}
+.bbox{
+  position:absolute; border:1.5px solid var(--accent); border-radius:4px; opacity:0; transition:opacity .4s ease;
+  box-shadow:0 0 0 4000px rgba(0,0,0,0) ;
+}
+.photo-frame:hover .bbox{opacity:1;}
+.bbox .tag{
+  position:absolute; top:-22px; left:-1.5px; background:var(--accent); color:#04121a; font-family:var(--font-mono);
+  font-size:10px; font-weight:600; padding:2px 6px; white-space:nowrap; border-radius:3px 3px 3px 0;
+}
+.bbox.b1{top:14%; left:18%; width:60%; height:66%;}
+.bbox.b2{top:8%; left:10%; width:35%; height:26%; border-color:var(--accent-2);}
+.bbox.b2 .tag{background:var(--accent-2);}
+.scan-line{position:absolute; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--accent),transparent); opacity:0; top:0;}
+.photo-frame:hover .scan-line{opacity:.9; animation:scan 1.8s linear infinite;}
+@keyframes scan{0%{top:0%;} 100%{top:100%;}}
+.about-copy h3{font-size:24px; margin-bottom:14px;}
+.about-copy p{color:var(--text-dim); margin-bottom:16px; max-width:600px;}
+.about-copy .quote{font-style:italic; color:var(--text); border-left:2px solid var(--accent); padding-left:16px; margin:20px 0; font-family:var(--font-head); font-size:18px;}
+.meta-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px 30px; margin-top:26px; font-size:13px;}
+.meta-grid div{display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding-bottom:8px;}
+.meta-grid span:first-child{color:var(--text-dimmer); font-family:var(--font-mono);}
 
-  <!-- =======================================================
-  * Template Name: iPortfolio - v3.7.0
-  * Template URL: https://bootstrapmade.com/iportfolio-bootstrap-portfolio-websites-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+/* education mini cards */
+.edu-grid{margin-top:40px; display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.edu-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px;}
+.edu-card .school{font-weight:600; font-size:15px;}
+.edu-card .deg{color:var(--text-dim); font-size:13px; margin-top:4px;}
+.edu-card .when{font-family:var(--font-mono); font-size:11px; color:var(--accent); margin-top:10px;}
+
+/* ---------- EXPERIENCE (trajectory) ---------- */
+.traj{position:relative; padding-left:36px;}
+.traj::before{
+  content:''; position:absolute; left:9px; top:6px; bottom:6px; width:2px;
+  background:repeating-linear-gradient(to bottom, var(--border) 0 6px, transparent 6px 12px);
+}
+.node{position:relative; margin-bottom:52px;}
+.node:last-child{margin-bottom:0;}
+.node::before{
+  content:''; position:absolute; left:-36px; top:4px; width:20px; height:20px; border-radius:50%;
+  background:var(--bg); border:2px solid var(--accent); box-shadow:0 0 0 4px var(--bg), 0 0 14px rgba(var(--accent-rgb),.5);
+}
+.node .role{font-size:19px; font-weight:600;}
+.node .org{color:var(--accent); font-family:var(--font-mono); font-size:13px; margin-top:2px;}
+.node .when{color:var(--text-dimmer); font-family:var(--font-mono); font-size:12px; margin-top:2px;}
+.node ul{margin-top:14px; padding-left:0; list-style:none;}
+.node li{position:relative; padding-left:20px; margin-bottom:10px; color:var(--text-dim); font-size:14px;}
+.node li::before{content:'▸'; position:absolute; left:0; color:var(--accent);}
+
+/* ---------- PROJECTS ---------- */
+.proj-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+.proj-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;
+  display:flex; flex-direction:column; transition:border-color .3s, transform .3s;
+}
+.proj-card:hover{border-color:rgba(var(--accent-rgb),.5); transform:translateY(-4px);}
+.proj-canvas-wrap{height:150px; background:var(--bg-alt); position:relative; border-bottom:1px solid var(--border);}
+.proj-canvas-wrap canvas{width:100%; height:100%; display:block;}
+.proj-body{padding:20px 22px 22px;}
+.proj-body .when{font-family:var(--font-mono); font-size:11px; color:var(--accent);}
+.proj-body h3{font-size:17px; margin:6px 0 10px;}
+.proj-body p{color:var(--text-dim); font-size:13.5px; margin-bottom:6px;}
+.tag-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:14px;}
+.tag-row span{font-family:var(--font-mono); font-size:10.5px; background:var(--surface-2); border:1px solid var(--border); color:var(--text-dim); padding:3px 8px; border-radius:999px;}
+.proj-links{margin-top:14px; display:flex; gap:14px;}
+.proj-links a{font-family:var(--font-mono); font-size:12px; color:var(--accent); display:flex; align-items:center; gap:5px;}
+.proj-links a:hover{text-decoration:underline;}
+
+/* ---------- SKILLS ---------- */
+.skills-wrap{display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:start;}
+.skill-group{margin-bottom:22px;}
+.skill-group h4{font-family:var(--font-mono); font-size:12px; color:var(--text-dimmer); text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px;}
+.chip-row{display:flex; flex-wrap:wrap; gap:8px;}
+.chip{
+  font-family:var(--font-mono); font-size:12.5px; padding:7px 13px; border-radius:8px; border:1px solid var(--border);
+  background:var(--surface); transition:all .25s;
+}
+.chip:hover{border-color:var(--accent); color:var(--accent); transform:translateY(-2px);}
+#skill-canvas-wrap{border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); height:420px; position:relative; overflow:hidden;}
+#skill-canvas-wrap canvas{width:100%; height:100%;}
+
+/* ---------- WRITING / AWARDS ---------- */
+.writing-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+.wcard{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px;}
+.wcard h4{font-family:var(--font-mono); font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px;}
+.wcard ul{list-style:none;}
+.wcard li{margin-bottom:14px; font-size:13.5px; color:var(--text-dim);}
+.wcard li strong{color:var(--text); display:block; font-size:14px; margin-bottom:2px;}
+.wcard li .yr{font-family:var(--font-mono); font-size:11px; color:var(--text-dimmer);}
+.pub-block p{font-size:13.5px; color:var(--text-dim); line-height:1.7;}
+.pub-block a{color:var(--accent);}
+
+/* ---------- CONTACT / FOOTER ---------- */
+#contact{text-align:center; padding-bottom:0;}
+#contact h2{font-size:clamp(32px,6vw,56px);}
+#contact p{color:var(--text-dim); max-width:480px; margin:16px auto 34px;}
+.contact-links{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+footer{margin-top:80px; border-top:1px solid var(--border); padding:26px 0; text-align:center;}
+footer p{font-family:var(--font-mono); font-size:11.5px; color:var(--text-dimmer);}
+footer p span{color:var(--accent);}
+
+/* scroll reveal */
+.reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+.reveal.in{opacity:1; transform:translateY(0);}
+
+@media (max-width:820px){
+  .about-grid{grid-template-columns:1fr;}
+  .edu-grid{grid-template-columns:1fr;}
+  .proj-grid{grid-template-columns:1fr;}
+  .skills-wrap{grid-template-columns:1fr;}
+  .writing-grid{grid-template-columns:1fr;}
+  nav#primary-nav{
+    position:fixed; top:64px; left:0; right:0; background:var(--bg); border-bottom:1px solid var(--border);
+    flex-direction:column; align-items:stretch; padding:10px; gap:4px; transform:translateY(-130%); transition:transform .35s ease;
+  }
+  nav#primary-nav.open{transform:translateY(0);}
+  nav#primary-nav a{padding:12px 16px;}
+  .nav-toggle{display:block;}
+}
+</style>
 </head>
-
 <body>
 
-  <!-- ======= Mobile nav toggle button ======= -->
-  <i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
+<canvas id="bg-canvas"></canvas>
 
-  <!-- ======= Header ======= -->
-  <header id="header">
-    <div class="d-flex flex-column">
-
-      <div class="profile">
-        <img src="assets/img/sihan.jpg" alt="" class="img-fluid rounded-circle">
-        <h1 class="text-light"><a href="index.html">Dong Sihan</a></h1>
-        <div class="social-links mt-3 text-center">
-          <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
-          <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
-          <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
-          <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
-          <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
-        </div>
-      </div>
-
-      <nav id="navbar" class="nav-menu navbar">
-        <ul>
-          <li><a href="#hero" class="nav-link scrollto active"><i class="bx bx-home"></i> <span>Home</span></a></li>
-          <li><a href="#about" class="nav-link scrollto"><i class="bx bx-user"></i> <span>About</span></a></li>
-          <li><a href="#resume" class="nav-link scrollto"><i class="bx bx-file-blank"></i> <span>Resume</span></a></li>
-          <li><a href="#portfolio" class="nav-link scrollto"><i class="bx bx-book-content"></i> <span>Portfolio</span></a></li>
-          <li><a href="#honors" class="nav-link scrollto"><i class="bx bx-server"></i> <span>Honors</span></a></li>
-          <li><a href="#publications" class="nav-link scrollto"><i class="bx bx-server"></i> <span>Publications</span></a></li>
-          <li><a href="#contact" class="nav-link scrollto"><i class="bx bx-envelope"></i> <span>Contact</span></a></li>
-        </ul>
-      </nav><!-- .nav-menu -->
+<header id="site-nav">
+  <div class="nav-inner">
+    <a href="#hero" class="brand"><span class="dot"></span>dong_sihan</a>
+    <nav id="primary-nav">
+      <a href="#about" class="nav-link">about</a>
+      <a href="#experience" class="nav-link">experience</a>
+      <a href="#projects" class="nav-link">projects</a>
+      <a href="#skills" class="nav-link">skills</a>
+      <a href="#writing" class="nav-link">writing</a>
+      <a href="#contact" class="nav-link">contact</a>
+    </nav>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button id="theme-toggle" aria-label="Toggle persona theme">
+        <span id="theme-label">engineer</span>
+        <span class="pill"></span>
+      </button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu">☰</button>
     </div>
-  </header><!-- End Header -->
+  </div>
+</header>
 
-  <!-- ======= Hero Section ======= -->
-  <section id="hero" class="d-flex flex-column justify-content-center align-items-center">
-    <div class="hero-container" data-aos="fade-in">
-      <h1>Dong Sihan</h1>
-      <p>I'm <span class="typed" data-typed-items="Robotics Engineer, Computer Vision Researcher, Mechanical Engineer, Artist, Novelist"></span></p>
+<main>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="wrap">
+      <div class="hero-eyebrow"><span class="blink"></span> whoami — Singapore, SG</div>
+      <h1 class="hero-name">Dong<br><span>Sihan</span></h1>
+      <div class="hero-role mono">I build <span id="typed-role"></span></div>
+      <p class="hero-desc">Robotics Software Engineer at M8M Group and NUS M.Sc. graduate in Mechanical Engineering, specializing in computer vision and deep learning for robotic perception. Off the clock, I trade tensors for paintbrushes — chasing the same obsession with pattern and story through watercolor and manga.</p>
+      <div class="hero-links">
+        <a class="btn primary" href="#projects">View projects →</a>
+        <a class="btn" href="mailto:sihandong14@gmail.com">Say hello</a>
+        <a class="btn" href="https://github.com/Sihanzz" target="_blank" rel="noopener">GitHub</a>
+      </div>
     </div>
-  </section><!-- End Hero -->
+  </section>
 
-  <main id="main">
-
-    <!-- ======= About Section ======= -->
-    <section id="about" class="about">
-      <div class="container">
-
-        <div class="section-title">
-          <h2>About</h2>
-          <p>I'm a M.Sc. student in Mechanical Engineering at NUS, specializing in computer vision and deep learning for robotic perception, with a focus on visual place recognition and autonomous navigation.</p>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-4" data-aos="fade-right">
-            <img src="assets/img/sihan.jpg" class="img-fluid" alt="">
-          </div>
-          <div class="col-lg-8 pt-4 pt-lg-0 content" data-aos="fade-left">
-            <h3>Robotics Engineer &amp; Artist.</h3>
-            <p class="fst-italic">
-              Do all that is within you — and leave the rest to fate.
-            </p>
-            <div class="row">
-              <div class="col-lg-6">
-                <ul>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Birthday:</strong> <span>May 2002</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Website:</strong> <span>sihanzz.github.com</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>City:</strong> <span>Singapore</span></li>
-                </ul>
-              </div>
-              <div class="col-lg-6">
-                <ul>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Degree:</strong> <span>Master</span></li>
-                  <li><i class="bi bi-chevron-right"></i> <strong>Email:</strong> <span>sihandong14@gmail.com</span></li>
-                </ul>
-              </div>
-            </div>
-            <p>
-              A robotics engineer by day, a painter and storyteller by soul. I blend vision with logic, art with algorithms — from neural nets to watercolor palettes, from SLAM maps to manga panels. Always cooking up something — whether it’s code, curry, or a cosmic idea.
-            </p>
-          </div>
-        </div>
-
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-tag">01 · about</div>
+        <h2>Vision meets logic, art meets algorithm.</h2>
       </div>
-    </section><!-- End About Section -->
-
-    <!-- ======= Facts Section ======= -->
-    <!-- <section id="facts" class="facts">
-      <div class="container">
-
-        <div class="section-title">
-          <h2>Facts</h2>
-          <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
+      <div class="about-grid reveal">
+        <div class="photo-frame">
+          <img src="assets/img/sihan.jpg" alt="Dong Sihan">
+          <div class="bbox b1"><span class="tag">robotics_engineer · 0.98</span></div>
+          <div class="bbox b2"><span class="tag">artist · 0.94</span></div>
+          <div class="scan-line"></div>
         </div>
-
-        <div class="row no-gutters">
-
-          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch" data-aos="fade-up">
-            <div class="count-box">
-              <i class="bi bi-emoji-smile"></i>
-              <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1" class="purecounter"></span>
-              <p><strong>Happy Clients</strong> consequuntur quae</p>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch" data-aos="fade-up" data-aos-delay="100">
-            <div class="count-box">
-              <i class="bi bi-journal-richtext"></i>
-              <span data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1" class="purecounter"></span>
-              <p><strong>Projects</strong> adipisci atque cum quia aut</p>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch" data-aos="fade-up" data-aos-delay="200">
-            <div class="count-box">
-              <i class="bi bi-headset"></i>
-              <span data-purecounter-start="0" data-purecounter-end="1453" data-purecounter-duration="1" class="purecounter"></span>
-              <p><strong>Hours Of Support</strong> aut commodi quaerat</p>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch" data-aos="fade-up" data-aos-delay="300">
-            <div class="count-box">
-              <i class="bi bi-people"></i>
-              <span data-purecounter-start="0" data-purecounter-end="32" data-purecounter-duration="1" class="purecounter"></span>
-              <p><strong>Hard Workers</strong> rerum asperiores dolor</p>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section> -->
-    <!-- End Facts Section -->
-
-    <!-- ======= Skills Section ======= -->
-    <section id="skills" class="skills section-bg">
-      <div class="container">
-
-        <div class="section-title">
-          <h2>Skills</h2>
-          <p>My technical expertise spans Python, ROS, and computer vision, complemented by hands-on skills in SolidWorks and embedded systems.</p>
-        </div>
-
-        <div class="row skills-content">
-
-          <div class="col-lg-6" data-aos="fade-up">
-
-            <div class="progress">
-              <span class="skill">Python <i class="val">80%</i></span>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            </div>
-
-            <div class="progress">
-              <span class="skill">ROS <i class="val">80%</i></span>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            </div>
-
-            <div class="progress">
-              <span class="skill">SolidWorks <i class="val">75%</i></span>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="progress">
-              <span class="skill">C/C++ <i class="val">60%</i></span>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            </div>
-
-            <div class="progress">
-              <span class="skill">Linux <i class="val">65%</i></span>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            </div>
-
-            <div class="progress">
-              <span class="skill">Numpy/Matlab <i class="val">60%</i></span>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-    </section><!-- End Skills Section -->
-
-    <!-- ======= Resume Section ======= -->
-    <!-- <section id="resume" class="resume">
-      <div class="container">
-
-        <div class="section-title">
-          <h2>Resume</h2>
-          <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-6" data-aos="fade-up">
-            <h3 class="resume-title">Sumary</h3>
-            <div class="resume-item pb-0">
-              <h4>Alex Smith</h4>
-              <p><em>Innovative and deadline-driven Graphic Designer with 3+ years of experience designing and developing user-centered digital/print marketing material from initial concept to final, polished deliverable.</em></p>
-              <ul>
-                <li>Portland par 127,Orlando, FL</li>
-                <li>(123) 456-7891</li>
-                <li>alice.barkley@example.com</li>
-              </ul>
-            </div>
-
-            <h3 class="resume-title">Education</h3>
-            <div class="resume-item">
-              <h4>Master of Fine Arts &amp; Graphic Design</h4>
-              <h5>2015 - 2016</h5>
-              <p><em>Rochester Institute of Technology, Rochester, NY</em></p>
-              <p>Qui deserunt veniam. Et sed aliquam labore tempore sed quisquam iusto autem sit. Ea vero voluptatum qui ut dignissimos deleniti nerada porti sand markend</p>
-            </div>
-            <div class="resume-item">
-              <h4>Bachelor of Fine Arts &amp; Graphic Design</h4>
-              <h5>2010 - 2014</h5>
-              <p><em>Rochester Institute of Technology, Rochester, NY</em></p>
-              <p>Quia nobis sequi est occaecati aut. Repudiandae et iusto quae reiciendis et quis Eius vel ratione eius unde vitae rerum voluptates asperiores voluptatem Earum molestiae consequatur neque etlon sader mart dila</p>
-            </div>
-          </div>
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-            <h3 class="resume-title">Professional Experience</h3>
-            <div class="resume-item">
-              <h4>Senior graphic design specialist</h4>
-              <h5>2019 - Present</h5>
-              <p><em>Experion, New York, NY </em></p>
-              <ul>
-                <li>Lead in the design, development, and implementation of the graphic, layout, and production communication materials</li>
-                <li>Delegate tasks to the 7 members of the design team and provide counsel on all aspects of the project. </li>
-                <li>Supervise the assessment of all graphic materials in order to ensure quality and accuracy of the design</li>
-                <li>Oversee the efficient use of production project budgets ranging from $2,000 - $25,000</li>
-              </ul>
-            </div>
-            <div class="resume-item">
-              <h4>Graphic design specialist</h4>
-              <h5>2017 - 2018</h5>
-              <p><em>Stepping Stone Advertising, New York, NY</em></p>
-              <ul>
-                <li>Developed numerous marketing programs (logos, brochures,infographics, presentations, and advertisements).</li>
-                <li>Managed up to 5 projects or tasks at a given time while under pressure</li>
-                <li>Recommended and consulted with clients on the most appropriate graphic design</li>
-                <li>Created 4+ design presentations and proposals a month for clients and account managers</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section> -->
-
-    <section id="resume" class="resume">
-      <div class="container">
-    
-        <div class="section-title">
-          <h2>Resume</h2>
-          <p>A multidisciplinary robotics engineer with a passion for computer vision, deep learning, and design. Experienced in building intelligent systems that perceive, learn, and act — all while staying grounded in artistic expression and purposeful creation.</p>
-        </div>
-    
-        <div class="row">
-          <div class="col-lg-6" data-aos="fade-up">
-            <h3 class="resume-title">Summary</h3>
-            <div class="resume-item pb-0">
-              <h4>Dong Sihan</h4>
-              <p><em>Robotics researcher and creative technologist with strong foundations in autonomous systems, visual place recognition, and control theory. Also an artist, writer, and culinary enthusiast — blending engineering precision with artistic intuition.</em></p>
-              <ul>
-                <li>Singapore</li>
-                <li>+65 8941 5822</li>
-                <li>sihandong14@gmail.com</li>
-              </ul>
-            </div>
-    
-            <h3 class="resume-title">Education</h3>
-            <div class="resume-item">
-              <h4>Bachelor & Exchange Program in Mechanical/Vehicle Engineering</h4>
-              <h5>Sep 2020 - Jun 2024 (Exchange at NUS: Aug 2023 - May 2024)</h5>
-              <p><em>Wuhan University of Technology & National University of Singapore</em></p>
-              <p>Completed key courses in Machine Vision, Neural Networks, Robotics Control, and Microprocessor Applications. Bachelor's thesis focused on the development of CF composite current collectors for structural battery applications. Participated in exchange program at NUS with GPA 4.42/5.0.</p>
-            </div>
-    
-            <div class="resume-item">
-              <h4>Master of Science, Mechanical Engineering</h4>
-              <h5>Aug 2024 - May 2025</h5>
-              <p><em>National University of Singapore</em></p>
-              <p>Specialized in robotics and intelligent systems, with courses in Deep Learning for Robotics, Autonomous Mobile Robots, Foundations of Optimization, Linear Systems, and Computer Control. Developed multiple applied research projects involving SLAM, control theory, and vision-based place recognition.</p>
-              <p>GPA 4.67/5.0</p>
-            </div>
-          </div>
-    
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-            <h3 class="resume-title">Projects & Experience</h3>
-    
-            <div class="resume-item">
-              <h4>Text and Sequence-Augmented Visual Place Recognition – Master's Thesis</h4>
-              <h5>2024 - 2025</h5>
-              <p><em>National University of Singapore</em></p>
-              <ul>
-                <li>Reproduced and analyzed Patch-NetVLAD and AnyLoc across datasets including BaiduMall, Oxford RobotCar, and HeRCULES.</li>
-                <li>Integrated PaddleOCR for text-based matching, with fusion strategies enhancing visual similarity under structured scenes.</li>
-                <li>Explored sequence-based retrieval and LLM-based matching to improve robustness in visually ambiguous or repetitive environments.</li>
-                <li>Quantitatively evaluated performance using Recall@N metrics across multiple backbones (ViT-S/14, ViT-G/14) and configurations.</li>
-              </ul>
-            </div>
-    
-            <div class="resume-item">
-              <h4>Autonomous Navigation & SLAM with ROS</h4>
-              <h5>2025</h5>
-              <p><em>Group Project</em></p>
-              <ul>
-                <li>Designed and implemented a ROS-based navigation pipeline on a simulated Jackal robot, involving environment mapping, localization, and task execution.</li>
-                <li>Led the SLAM module using FAST-LIO for LiDAR-inertial mapping, with evaluation against ground truth odometry to assess mapping accuracy.</li>
-                <li>Integrated real-time navigation strategies to complete multiple autonomous tasks, including obstacle avoidance and sequential object interaction.</li>
-              </ul>
-            </div>
-    
-            <div class="resume-item">
-              <h4>Recommender System Optimization</h4>
-              <h5>2024</h5>
-              <p><em>Course Project</em></p>
-              <ul>
-                <li>Developed low-rank matrix completion in MATLAB with YALMIP/MOSEK to fill sparse rating matrices.</li>
-                <li>Benchmarked performance using prediction accuracy metrics under noise constraints.</li>
-              </ul>
-            </div>
-    
-            <div class="resume-item">
-              <h4>Control System Design for CSTR</h4>
-              <h5>2024</h5>
-              <p><em>Course Project</em></p>
-              <ul>
-                <li>Modeled a stirred tank reactor system with disturbances in state-space form.</li>
-                <li>Implemented LQR, decoupling, and observer-based control under transient specs.</li>
-              </ul>
-            </div>
-    
-            <div class="resume-item">
-              <h4>Battery Structure Optimization – Undergraduate Thesis</h4>
-              <h5>2023 - 2024</h5>
-              <p><em>Wuhan University of Technology</em></p>
-              <ul>
-                <li>Developed CF composite current collectors for use in structural battery design.</li>
-                <li>Published in ASME IMECE2024 conference proceedings.</li>
-              </ul>
-            </div>
-    
+        <div class="about-copy">
+          <h3>Robotics Engineer &amp; Artist.</h3>
+          <p class="quote">Do all that is within you — and leave the rest to fate.</p>
+          <p>A robotics engineer by day, a painter and storyteller by soul. I blend vision with logic, art with algorithms — from neural nets to watercolor palettes, from SLAM maps to manga panels. Always cooking up something — whether it's code, curry, or a cosmic idea.</p>
+          <div class="meta-grid">
+            <div><span>city</span><span>Singapore</span></div>
+            <div><span>degree</span><span>M.Sc. Mechanical Eng.</span></div>
+            <div><span>email</span><span>sihandong14@gmail.com</span></div>
+            <div><span>website</span><span>sihanzz.github.io</span></div>
           </div>
         </div>
       </div>
-    </section>
-    <!-- End Resume Section -->
 
-    <!-- ======= Portfolio Section ======= -->
-    <section id="portfolio" class="portfolio section-bg">
-      <div class="container">
-
-        <div class="section-title">
-          <h2>Portfolio</h2>
-          <p>Skilled in various art styles including watercolor, comic illustration, sketching, and painterly digital rendering.</p>
+      <div class="edu-grid reveal">
+        <div class="edu-card">
+          <div class="school">National University of Singapore</div>
+          <div class="deg">M.Sc. Mechanical Engineering · GPA 4.65/5.0</div>
+          <div class="when">AUG 2024 — MAY 2025</div>
         </div>
-
-        <div class="row" data-aos="fade-up">
-          <div class="col-lg-12 d-flex justify-content-center">
-            <ul id="portfolio-flters">
-              <li data-filter="*" class="filter-active">All</li>
-              <li data-filter=".filter-thick">Thick</li>
-              <li data-filter=".filter-water">Water</li>
-              <li data-filter=".filter-comic">Comic</li>
-              <li data-filter=".filter-sketch">Sketch</li>
-            </ul>
-          </div>
+        <div class="edu-card">
+          <div class="school">Wuhan University of Technology</div>
+          <div class="deg">B.Eng. Vehicle Engineering · GPA 88/100 (exchange at NUS, GPA 4.42/5.0)</div>
+          <div class="when">SEP 2020 — JUN 2024</div>
         </div>
-
-        <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="100">
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-thick">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-1.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-1.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Call me by your name"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-comic">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-2.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-2.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Universe"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-comic">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-3.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-3.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Flower"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-comic">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-4.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-4.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Kidnap"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-comic">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-5.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-5.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Hero"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-water">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-6.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-6.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Seasons"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-sketch">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-7.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-7.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Beauty"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-comic">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-8.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-8.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Struggling"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-sketch">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-9.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-9.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Streets"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-comic">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-10.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-10.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Me"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-thick">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-13.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-13.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Egg"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-sketch">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-11.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-11.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="First Love"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-6 portfolio-item filter-comic">
-            <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/portfolio-12.jpg" class="img-fluid" alt="">
-              <div class="portfolio-links">
-                <a href="assets/img/portfolio/portfolio-12.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox" title="Festival"><i class="bx bx-plus"></i></a>
-                <!-- <a href="portfolio-details.html" title="More Details"><i class="bx bx-link"></i></a> -->
-              </div>
-            </div>
-          </div>
-
-        </div>
-
       </div>
-    </section><!-- End Portfolio Section -->
+    </div>
+  </section>
 
-
-    <!-- ======= Honors Section ======= -->
-    <section id="honors" class="d-flex flex-column justify-content-center align-items-center">
-      <div class="container" data-aos="fade-in">
-        <div class="section-title">
-          <h2>Honors & Awards</h2>
-        </div>
-        <div class="honors-list">
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-tag">02 · trajectory</div>
+        <h2>Where I've deployed vision to the real world.</h2>
+      </div>
+      <div class="traj reveal">
+        <div class="node">
+          <div class="role">Robotics Software Engineer</div>
+          <div class="org">M8M Group · Singapore</div>
+          <div class="when">AUG 2025 — PRESENT</div>
           <ul>
-            <li><strong>Asia Pacific Mathematical Contest in Modeling:</strong> Second Prize in 2022</li>
-            <li><strong>University Scholarship:</strong> Third Prize in 2021 and 2022</li>
+            <li><strong>Vision-Guided Adaptive Robotic Assembly for HP</strong> — replaced a drift-prone fixed-trajectory approach with image-based visual servoing, dynamically aligning the robot to the insertion position and cutting assembly-line downtime.</li>
+            <li><strong>Edge-Optimized Open-Set Segmentation Engine for Changi Airport</strong> — deployed a SAM3-based promptable detector on the edge; built a Rust + CUDA preprocessing pipeline with prompt caching, quantization and a TensorRT backend for near real-time inference.</li>
+            <li><strong>Vision-Based Robotic Baggage Loading &amp; 3D Bin-Packing for Changi Airport</strong> — with ARTC, combined conveyor-based dimension estimation with 3D container mapping; implemented Extreme-Point bin-packing with stability-aware scoring and beam search for an ABB arm.</li>
+          </ul>
+        </div>
+        <div class="node">
+          <div class="role">Robotics Engineering Intern</div>
+          <div class="org">Flexiv Robotics · Singapore</div>
+          <div class="when">APR 2025 — MAY 2025</div>
+          <ul>
+            <li>Built motion workflows for the Flexiv Rizon 4 arm — trajectory planning for pick-and-place, insertion/removal, clamping and polishing.</li>
+            <li>Tuned path planning for DIMM and tray robots on an HPE production line, enabling precise connector insertion.</li>
+            <li>Mapped environments in Seer RoboShop to support AGV–arm collaboration and material-handling demos.</li>
           </ul>
         </div>
       </div>
-    </section><!-- End Honors Section -->
+    </div>
+  </section>
 
-    <!-- ======= Publications Section ======= -->
-    <section id="publications" class="d-flex flex-column justify-content-center align-items-center">
-      <div class="container" data-aos="fade-in">
-        <div class="section-title">
-          <h2>Publications</h2>
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-tag">03 · projects</div>
+        <h2>Perception, localization &amp; planning, mostly.</h2>
+      </div>
+      <div class="proj-grid reveal">
+
+        <div class="proj-card">
+          <div class="proj-canvas-wrap"><canvas data-anim="vpr"></canvas></div>
+          <div class="proj-body">
+            <div class="when">MASTER'S THESIS · AUG 2024 – MAY 2025</div>
+            <h3>Text &amp; Sequence-Augmented Visual Place Recognition</h3>
+            <p>VPR pipelines on Patch-NetVLAD and AnyLoc across BaiduMall, Oxford RobotCar and HeRCULES to study cross-domain localization.</p>
+            <p>Fused PaddleOCR text features with visual descriptors and built sequence-based retrieval for robustness under viewpoint change.</p>
+            <div class="tag-row"><span>PyTorch</span><span>Patch-NetVLAD</span><span>AnyLoc</span><span>PaddleOCR</span></div>
+          </div>
         </div>
-        <div class="publications-list">
+
+        <div class="proj-card">
+          <div class="proj-canvas-wrap"><canvas data-anim="walk"></canvas></div>
+          <div class="proj-body">
+            <div class="when">COURSE PROJECT · MAR – MAY 2025</div>
+            <h3>Humanoid Robot Walking via Reinforcement Learning</h3>
+            <p>PPO &amp; TD3 locomotion policies in MuJoCo, with Beta-distribution action sampling, cosine-annealed LR and parallel rollouts.</p>
+            <p>Beat CleanRL baselines on training stability and reward.</p>
+            <div class="tag-row"><span>PPO</span><span>TD3</span><span>MuJoCo</span></div>
+            <div class="proj-links"><a href="https://github.com/Sihanzz/ME5406_Group_Project" target="_blank" rel="noopener">↗ code</a></div>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div class="proj-canvas-wrap"><canvas data-anim="astar"></canvas></div>
+          <div class="proj-body">
+            <div class="when">COURSE PROJECT · FEB – APR 2025</div>
+            <h3>Autonomous Robot Algorithms: Perception, Localization &amp; Planning</h3>
+            <p>Object tracking (detection + association + Kalman filter) and multi-agent trajectory prediction; ICP registration and ROS Cartographer SLAM.</p>
+            <p>A*, Dijkstra and Greedy Best-First for a multi-goal travelling-shopper routing problem.</p>
+            <div class="tag-row"><span>Kalman Filter</span><span>ICP</span><span>A*</span><span>ROS</span></div>
+            <div class="proj-links"><a href="https://github.com/Sihanzz/autonomous-robot-algorithms" target="_blank" rel="noopener">↗ code</a></div>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div class="proj-canvas-wrap"><canvas data-anim="radar"></canvas></div>
+          <div class="proj-body">
+            <div class="when">GROUP PROJECT · MAR – APR 2025</div>
+            <h3>LiDAR-SLAM Navigation System</h3>
+            <p>Led SLAM &amp; localization on a simulated Jackal robot — LiDAR-inertial odometry via FAST-LIO for real-time mapping.</p>
+            <p>Validated with evo against ground truth; integrated AMCL for stable pose estimation under dynamic conditions.</p>
+            <div class="tag-row"><span>FAST-LIO</span><span>AMCL</span><span>ROS</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-tag">04 · core competence</div>
+        <h2>The stack behind the systems.</h2>
+      </div>
+      <div class="skills-wrap reveal">
+        <div>
+          <div class="skill-group">
+            <h4>Reinforcement Learning</h4>
+            <div class="chip-row"><span class="chip">PPO</span><span class="chip">TD3</span><span class="chip">MuJoCo</span></div>
+          </div>
+          <div class="skill-group">
+            <h4>Robotics Systems</h4>
+            <div class="chip-row"><span class="chip">ROS</span><span class="chip">Kinematics</span><span class="chip">AMR Systems</span></div>
+          </div>
+          <div class="skill-group">
+            <h4>Computer Vision &amp; Perception</h4>
+            <div class="chip-row"><span class="chip">PyTorch</span><span class="chip">YOLO</span><span class="chip">PaddleOCR</span></div>
+          </div>
+          <div class="skill-group">
+            <h4>Edge AI Deployment</h4>
+            <div class="chip-row"><span class="chip">NVIDIA Jetson</span><span class="chip">TensorRT</span><span class="chip">Real-time Inference</span></div>
+          </div>
+          <div class="skill-group">
+            <h4>Programming &amp; Data</h4>
+            <div class="chip-row"><span class="chip">Python</span><span class="chip">C</span><span class="chip">MATLAB</span><span class="chip">NumPy</span><span class="chip">Matplotlib</span></div>
+          </div>
+        </div>
+        <div id="skill-canvas-wrap"><canvas id="skill-canvas"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WRITING / AWARDS / CERTS -->
+  <section id="writing">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-tag">05 · recognition</div>
+        <h2>Publications, awards &amp; certifications.</h2>
+      </div>
+
+      <div class="wcard reveal pub-block" style="margin-bottom:22px;">
+        <h4>Publication</h4>
+        <p><strong style="color:var(--text); display:block; margin-bottom:6px;">Developing Carbon Fibre Composite Current Collectors for Structural Battery Applications</strong>
+        Karthikayen Raju, Sihan Dong, and Tong-Earn Tay · ASME IMECE2024 Proceedings, V010T12A027 · November 2024 ·
+        <a href="https://doi.org/10.1115/IMECE2024-146111" target="_blank" rel="noopener">DOI: 10.1115/IMECE2024-146111 ↗</a></p>
+      </div>
+
+      <div class="writing-grid reveal">
+        <div class="wcard">
+          <h4>Certifications</h4>
           <ul>
-            <li>
-              <strong>Developing Carbon Fibre Composite Current Collectors for Structural Battery Applications</strong><br>
-              <em>ASME IMECE2024 Proceedings, November 2024</em>
-            </li>
+            <li><strong>Reinforcement Learning Specialization</strong>University of Alberta (Coursera) <span class="yr">· 2026</span></li>
+            <li><strong>Deep Learning Specialization</strong>DeepLearning.AI <span class="yr">· 2026</span></li>
+          </ul>
+        </div>
+        <div class="wcard">
+          <h4>Awards</h4>
+          <ul>
+            <li><strong>Asia Pacific Mathematical Contest in Modeling</strong>Second Prize <span class="yr">· 2022</span></li>
+            <li><strong>University Scholarship</strong>Third Prize <span class="yr">· 2021 &amp; 2022</span></li>
           </ul>
         </div>
       </div>
-    </section><!-- End Publications Section -->
+    </div>
+  </section>
 
-
-    <!-- ======= Contact Section ======= -->
-    <section id="contact" class="contact">
-      <div class="container">
-
-        <div class="section-title">
-          <h2>Contact</h2>
-          <p>Feel free to contact me.</p>
-        </div>
-
-        <div class="row" data-aos="fade-in">
-
-          <div class="col-lg-5 d-flex align-items-stretch">
-            <div class="info">
-              <div class="address">
-                <i class="bi bi-geo-alt"></i>
-                <h4>Location:</h4>
-                <p>Block E6, Level 7, E6-07-01, 5 Engineering Drive 1, 117608</p>
-              </div>
-
-              <div class="email">
-                <i class="bi bi-envelope"></i>
-                <h4>Email:</h4>
-                <p>sihandong14@gmail.com</p>
-              </div>
-
-
-
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.792280511498!2d103.7730054!3d1.2994287999999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da1af78f439c1d%3A0x10af324f99a95123!2sAdvanced%20Robotics%20Centre!5e0!3m2!1szh-CN!2ssg!4v1744646670125!5m2!1szh-CN!2ssg" style="border:0; width: 100%; height: 270px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-
-          </div>
-
-          <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
-            <form action="forms/contact.php" method="post" role="form" class="php-email-form">
-              <div class="row">
-                <div class="form-group col-md-6">
-                  <label for="name">Your Name</label>
-                  <input type="text" name="name" class="form-control" id="name" required>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="name">Your Email</label>
-                  <input type="email" class="form-control" name="email" id="email" required>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="name">Subject</label>
-                <input type="text" class="form-control" name="subject" id="subject" required>
-              </div>
-              <div class="form-group">
-                <label for="name">Message</label>
-                <textarea class="form-control" name="message" rows="10" required></textarea>
-              </div>
-              <div class="my-3">
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Your message has been sent. Thank you!</div>
-              </div>
-              <div class="text-center"><button type="submit">Send Message</button></div>
-            </form>
-          </div>
-
-        </div>
-
-      </div>
-    </section><!-- End Contact Section -->
-
-  </main><!-- End #main -->
-
-  <!-- ======= Footer ======= -->
-  <footer id="footer">
-    <div class="container">
-      <div class="copyright">
-        &copy; Copyright <strong><span>iPortfolio</span></strong>
-      </div>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/iportfolio-bootstrap-portfolio-websites-template/ -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="section-tag" style="justify-content:center;">06 · contact</div>
+      <h2>Let's build (or paint) something.</h2>
+      <p>Open to conversations about robotics, computer vision, or which watercolor pigment behaves best in Singapore humidity.</p>
+      <div class="contact-links">
+        <a class="btn primary" href="mailto:sihandong14@gmail.com">sihandong14@gmail.com</a>
+        <a class="btn" href="https://github.com/Sihanzz" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn" href="https://www.linkedin.com/in/sihan66" target="_blank" rel="noopener">LinkedIn ↗</a>
       </div>
     </div>
-  </footer><!-- End  Footer -->
+  </section>
 
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <footer>
+    <p>designed &amp; built by <span>Dong Sihan</span> · Singapore · toggle the persona switch above ↑</p>
+  </footer>
 
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/purecounter/purecounter.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/typed.js/typed.min.js"></script>
-  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
+</main>
 
-  <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
+<script>
+/* ---------------- THEME TOGGLE ---------------- */
+const root = document.documentElement;
+const themeBtn = document.getElementById('theme-toggle');
+const themeLabel = document.getElementById('theme-label');
+themeBtn.addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'engineer' ? 'artist' : 'engineer';
+  root.setAttribute('data-theme', next);
+  themeLabel.textContent = next;
+});
 
+/* ---------------- MOBILE NAV ---------------- */
+const navToggle = document.getElementById('nav-toggle');
+const primaryNav = document.getElementById('primary-nav');
+navToggle.addEventListener('click', () => primaryNav.classList.toggle('open'));
+document.querySelectorAll('.nav-link').forEach(a => a.addEventListener('click', () => primaryNav.classList.remove('open')));
+
+/* ---------------- ACTIVE NAV ON SCROLL ---------------- */
+const sections = document.querySelectorAll('main section[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+const navObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+sections.forEach(s => navObserver.observe(s));
+
+/* ---------------- SCROLL REVEAL ---------------- */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealObserver.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ---------------- TYPED ROLE ---------------- */
+const roles = ['vision-guided robots.', 'perception pipelines.', 'RL policies that walk.', 'the occasional watercolor.'];
+const typedEl = document.getElementById('typed-role');
+let ri = 0, ci = 0, deleting = false;
+function typeLoop(){
+  const word = roles[ri];
+  if (!deleting){
+    ci++;
+    typedEl.textContent = word.slice(0, ci);
+    if (ci === word.length){ deleting = true; setTimeout(typeLoop, 1400); return; }
+  } else {
+    ci--;
+    typedEl.textContent = word.slice(0, ci);
+    if (ci === 0){ deleting = false; ri = (ri+1) % roles.length; }
+  }
+  setTimeout(typeLoop, deleting ? 35 : 65);
+}
+typeLoop();
+
+/* ---------------- BACKGROUND PARTICLE NETWORK ---------------- */
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+  const COUNT = 70;
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = document.documentElement.scrollHeight;
+  }
+  function getAccent(){
+    return getComputedStyle(root).getPropertyValue('--accent-rgb').trim();
+  }
+  function init(){
+    resize();
+    particles = Array.from({length: COUNT}, () => ({
+      x: Math.random()*w, y: Math.random()*h,
+      vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.25
+    }));
+  }
+  function step(){
+    ctx.clearRect(0,0,w,h);
+    const accent = getAccent();
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+    });
+    for (let i=0;i<particles.length;i++){
+      for (let j=i+1;j<particles.length;j++){
+        const a = particles[i], b = particles[j];
+        const d = Math.hypot(a.x-b.x, a.y-b.y);
+        if (d < 140){
+          ctx.strokeStyle = `rgba(${accent},${(1-d/140)*0.25})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+    particles.forEach(p => {
+      ctx.fillStyle = `rgba(${accent},0.8)`;
+      ctx.beginPath(); ctx.arc(p.x,p.y,1.6,0,Math.PI*2); ctx.fill();
+    });
+    requestAnimationFrame(step);
+  }
+  window.addEventListener('resize', resize);
+  init(); step();
+  setTimeout(resize, 800); // catch late layout shifts
+})();
+
+/* ---------------- PROJECT MINI CANVASES ---------------- */
+function setupCanvas(canvas){
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width*dpr; canvas.height = rect.height*dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  return {ctx, w: rect.width, h: rect.height};
+}
+function getVar(name){ return getComputedStyle(root).getPropertyValue(name).trim(); }
+
+function animVPR(canvas){
+  const {ctx,w,h} = setupCanvas(canvas);
+  const pts = Array.from({length:34}, () => ({x:Math.random()*w, y:Math.random()*h, phase:Math.random()*Math.PI*2}));
+  const cx=w/2, cy=h/2;
+  function frame(t){
+    ctx.clearRect(0,0,w,h);
+    const accent = getVar('--accent'), accent2 = getVar('--accent-2');
+    const k = (Math.sin(t/1400)+1)/2; // 0..1 morph amount
+    pts.forEach((p,i) => {
+      const tx = cx + Math.cos(i/pts.length*Math.PI*2)*Math.min(w,h)*0.32;
+      const ty = cy + Math.sin(i/pts.length*Math.PI*2)*Math.min(w,h)*0.32;
+      const x = p.x + (tx-p.x)*k;
+      const y = p.y + (ty-p.y)*k;
+      ctx.fillStyle = i%3===0 ? accent2 : accent;
+      ctx.globalAlpha = 0.85;
+      ctx.beginPath(); ctx.arc(x,y,2.2,0,Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function animWalk(canvas){
+  const {ctx,w,h} = setupCanvas(canvas);
+  const groundY = h*0.72;
+  let x0 = -20;
+  function limb(cx,cy,len,ang,color){
+    ctx.strokeStyle = color; ctx.lineWidth=2.4; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    const ex = cx+Math.sin(ang)*len, ey = cy+Math.cos(ang)*len;
+    ctx.lineTo(ex,ey); ctx.stroke();
+    return {ex,ey};
+  }
+  function frame(t){
+    ctx.clearRect(0,0,w,h);
+    const accent = getVar('--accent'), accent2 = getVar('--accent-2'), dim = getVar('--text-dimmer');
+    ctx.strokeStyle = dim; ctx.globalAlpha=.5; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(0,groundY); ctx.lineTo(w,groundY); ctx.stroke();
+    ctx.globalAlpha=1;
+    x0 += 0.9; if (x0 > w+20) x0 = -20;
+    const speed = t/220;
+    const hipY = groundY - h*0.22;
+    // torso
+    ctx.strokeStyle = accent; ctx.lineWidth=2.6;
+    ctx.beginPath(); ctx.moveTo(x0, hipY); ctx.lineTo(x0, hipY - h*0.18); ctx.stroke();
+    // head
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(x0, hipY - h*0.18 - 6, 5, 0, Math.PI*2); ctx.fill();
+    // legs
+    const legA = Math.sin(speed)*0.9, legB = Math.sin(speed+Math.PI)*0.9;
+    const kneeA = limb(x0, hipY, h*0.12, legA, accent2);
+    limb(kneeA.ex, kneeA.ey, h*0.12, legA*0.4, accent2);
+    const kneeB = limb(x0, hipY, h*0.12, legB, accent2);
+    limb(kneeB.ex, kneeB.ey, h*0.12, legB*0.4, accent2);
+    // arms
+    const armA = Math.sin(speed+Math.PI)*0.6, armB = Math.sin(speed)*0.6;
+    limb(x0, hipY - h*0.16, h*0.09, armA, accent);
+    limb(x0, hipY - h*0.16, h*0.09, armB, accent);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function animAStar(canvas){
+  const {ctx,w,h} = setupCanvas(canvas);
+  const cols = 14, rows = 7;
+  const cw = w/cols, ch = h/rows;
+  const path = [];
+  for (let i=0;i<cols;i++){
+    const r = Math.max(0, Math.min(rows-1, Math.round(rows/2 + Math.sin(i*0.6)*2)));
+    path.push({c:i, r});
+  }
+  function frame(t){
+    ctx.clearRect(0,0,w,h);
+    const border = getVar('--border'), accent = getVar('--accent'), accent2 = getVar('--accent-2');
+    ctx.strokeStyle = border; ctx.globalAlpha=.5; ctx.lineWidth=1;
+    for (let i=0;i<=cols;i++){ ctx.beginPath(); ctx.moveTo(i*cw,0); ctx.lineTo(i*cw,h); ctx.stroke(); }
+    for (let j=0;j<=rows;j++){ ctx.beginPath(); ctx.moveTo(0,j*ch); ctx.lineTo(w,j*ch); ctx.stroke(); }
+    ctx.globalAlpha=1;
+    // static path cells
+    ctx.fillStyle = accent2; ctx.globalAlpha=.28;
+    path.forEach(p => ctx.fillRect(p.c*cw+1, p.r*ch+1, cw-2, ch-2));
+    ctx.globalAlpha=1;
+    // moving agent
+    const idx = Math.floor((t/380) % path.length);
+    const p = path[idx];
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(p.c*cw+cw/2, p.r*ch+ch/2, Math.min(cw,ch)*0.28, 0, Math.PI*2); ctx.fill();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function animRadar(canvas){
+  const {ctx,w,h} = setupCanvas(canvas);
+  const cx=w/2, cy=h/2, r=Math.min(w,h)*0.42;
+  const blips = Array.from({length:16}, () => ({ang:Math.random()*Math.PI*2, rad:Math.random()*r}));
+  function frame(t){
+    ctx.clearRect(0,0,w,h);
+    const border = getVar('--border'), accent = getVar('--accent');
+    ctx.strokeStyle = border; ctx.globalAlpha=.6; ctx.lineWidth=1;
+    [0.33,0.66,1].forEach(f => { ctx.beginPath(); ctx.arc(cx,cy,r*f,0,Math.PI*2); ctx.stroke(); });
+    ctx.globalAlpha=1;
+    const sweep = (t/1000) % (Math.PI*2);
+    const grad = ctx.createConicGradient ? ctx.createConicGradient(sweep-0.6, cx, cy) : null;
+    if (grad){
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(0.94, 'rgba(0,0,0,0)');
+      grad.addColorStop(1, accent);
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,sweep-0.6,sweep); ctx.closePath(); ctx.fill();
+    }
+    ctx.strokeStyle = accent; ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(sweep)*r, cy+Math.sin(sweep)*r); ctx.stroke();
+    blips.forEach(b => {
+      let diff = (sweep - b.ang) % (Math.PI*2); if (diff<0) diff += Math.PI*2;
+      const fresh = diff < 0.5 ? 1-diff/0.5 : 0;
+      ctx.fillStyle = accent; ctx.globalAlpha = 0.25 + fresh*0.75;
+      const x = cx+Math.cos(b.ang)*b.rad, y = cy+Math.sin(b.ang)*b.rad;
+      ctx.beginPath(); ctx.arc(x,y,2.2,0,Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+const animMap = { vpr: animVPR, walk: animWalk, astar: animAStar, radar: animRadar };
+document.querySelectorAll('canvas[data-anim]').forEach(c => {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        animMap[c.dataset.anim](c);
+        io.disconnect();
+      }
+    });
+  }, {threshold:0.2});
+  io.observe(c);
+});
+
+/* ---------------- SKILL NETWORK GRAPH ---------------- */
+(function(){
+  const canvas = document.getElementById('skill-canvas');
+  const wrap = document.getElementById('skill-canvas-wrap');
+  const dpr = window.devicePixelRatio || 1;
+  let w,h,ctx;
+  const groups = [
+    {label:'RL', items:['PPO','TD3','MuJoCo']},
+    {label:'Robotics', items:['ROS','Kinematics','AMR']},
+    {label:'Vision', items:['PyTorch','YOLO','PaddleOCR']},
+    {label:'Edge AI', items:['Jetson','TensorRT']},
+    {label:'Core', items:['Python','C','MATLAB']}
+  ];
+  let nodes = [];
+  function layout(){
+    const rect = wrap.getBoundingClientRect();
+    w = canvas.width = rect.width*dpr; h = canvas.height = rect.height*dpr;
+    ctx = canvas.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+    nodes = [];
+    const cx = rect.width/2, cy = rect.height/2, R = Math.min(rect.width,rect.height)*0.21;
+    groups.forEach((g,gi) => {
+      const gAng = (gi/groups.length)*Math.PI*2 - Math.PI/2;
+      const gx = cx + Math.cos(gAng)*R, gy = cy + Math.sin(gAng)*R;
+      nodes.push({x:gx,y:gy,label:g.label,core:true,ang:gAng});
+      g.items.forEach((label,ii) => {
+        const a = gAng + (ii-(g.items.length-1)/2)*0.3;
+        const rr = R*(1.6 + (ii%2)*0.28);
+        nodes.push({x:cx+Math.cos(a)*rr, y:cy+Math.sin(a)*rr, label, core:false, parent:nodes.length-ii-1<0?0:groups.indexOf(g), gx, gy, la:a});
+      });
+    });
+    return {cx,cy,rectW:rect.width,rectH:rect.height};
+  }
+  let center = layout();
+  window.addEventListener('resize', () => { center = layout(); });
+  function frame(t){
+    ctx.clearRect(0,0,center.rectW,center.rectH);
+    const border = getVar('--border'), accent = getVar('--accent'), accent2 = getVar('--accent-2'), text=getVar('--text-dim');
+    ctx.font = '11px "IBM Plex Mono", monospace';
+    const cores = nodes.filter(n=>n.core);
+    // center to core lines
+    cores.forEach(n => {
+      ctx.strokeStyle = border; ctx.globalAlpha=.8; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(center.cx, center.cy); ctx.lineTo(n.x, n.y); ctx.stroke();
+    });
+    // core to leaf lines
+    nodes.filter(n=>!n.core).forEach(n => {
+      ctx.strokeStyle = border; ctx.globalAlpha=.6; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(n.gx, n.gy); ctx.lineTo(n.x, n.y); ctx.stroke();
+    });
+    ctx.globalAlpha=1;
+    // pulsing center
+    const pulse = 3+Math.sin(t/500)*1.4;
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(center.cx, center.cy, pulse+3, 0, Math.PI*2); ctx.fill();
+    // core nodes
+    cores.forEach((n,i) => {
+      ctx.fillStyle = accent2;
+      ctx.beginPath(); ctx.arc(n.x,n.y,5,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = text;
+      ctx.textAlign = Math.cos(n.ang)>0.2?'left':Math.cos(n.ang)<-0.2?'right':'center';
+      ctx.fillText(n.label, n.x+Math.cos(n.ang)*12, n.y+Math.sin(n.ang)*12);
+    });
+    // leaf nodes
+    nodes.filter(n=>!n.core).forEach(n => {
+      ctx.fillStyle = accent; ctx.globalAlpha=.85;
+      ctx.beginPath(); ctx.arc(n.x,n.y,2.6,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=1;
+      ctx.fillStyle = text;
+      const lx = n.x+Math.cos(n.la)*10, ly = n.y+Math.sin(n.la)*10;
+      ctx.textAlign = Math.cos(n.la)>0.25?'left':Math.cos(n.la)<-0.25?'right':'center';
+      ctx.fillText(n.label, lx, ly+3);
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
 </body>
-
 </html>
